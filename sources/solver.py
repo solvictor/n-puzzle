@@ -1,115 +1,93 @@
 from argparse import ArgumentParser
-from typing import List
-import sys
+import parsing
+import utils
+from typing import List, Tuple, Optional
 import heapq
-from collections import deque
 from math import log10
+import heuristics
 
-def error(*args, **kwargs):
-	print(*args, **kwargs, file=sys.stderr)
-	exit(1)
-
-def rinttt(puzzle, size):
+def print_puzzle(puzzle, size, header = True):
 	formatted_puzzle = ""
 	element_format = "{:<" + str(int(log10(size * size) + 1)) + "}"
 	for line in range(0, len(puzzle), size):
 		if line:
 			formatted_puzzle += '\n'
 		formatted_puzzle += ' '.join(map(element_format.format, puzzle[line: line + size]))
-	print(f"Puzzle {size}x{size}\n{formatted_puzzle}")
+	if header:
+		print(f"Puzzle {size}x{size}")
+	print(formatted_puzzle)
 
-class Puzzle:
-	def __init__(self, puzzle: List[int]) -> None:
-		self.check_valid(puzzle)
-		self.size = puzzle[0][0]
-		self.puzzle = sum(puzzle[1:], [])
-		self.solved = False
-	
-	def check_valid(self, puzzle) -> None:
-		if not puzzle or any(not line for line in puzzle):
-			raise Exception("Invalid puzzle")
-		size = puzzle[0][0]
-		puzzle = puzzle[1:]
-		if size != len(puzzle) or any(len(line) != size for line in puzzle):
-			raise Exception("Invalid puzzle")
-		# TODO Dimensions are valid, add solvability check 
+def print_moves(puzzle, size, moves):
+	puzzle = list(puzzle)
+	print_puzzle(puzzle, size)
+	print()
+	start = puzzle.index(0)
+	y = start // size
+	x = start % size
+	for ny, nx, s in moves:
+		print(s)
+		puzzle[ny * size + nx], puzzle[y * size + x] = puzzle[y * size + x], puzzle[ny * size + nx]
+		y, x = ny, nx
+		print_puzzle(puzzle, size, header = False)
+		print()
 
-	def expand(self, state, h):
-		f, d, y, x, puzzle = state
-		possibilities = []
+def astar_solve(base_grid, size, goal, heuristic):
+	space_complexity = 0
+	time_complexity = 0
 
-		for ny, nx in ((y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)):
-			if ny < 0 or ny == self.size or nx < 0 or nx == self.size:
-				continue
-			updated_puzzle = list(puzzle)
-			updated_puzzle[y * self.size + x], updated_puzzle[ny * self.size + nx] = updated_puzzle[ny * self.size + nx], updated_puzzle[y * self.size + x]
-			possibilities.append((h(), d + 1, ny, nx, tuple(updated_puzzle)))
+	start = base_grid.index(0)
+	y = start // size
+	x = start % size
 
-		return possibilities
+	heap = [(0, y, x, base_grid, [])]
+	seen = set()
 
-	def solve(self, h) -> None:
-		idx = self.puzzle.index(0)
-		y = idx // self.size
-		x = idx % self.size
-		initial_state = (0, 0, y, x, tuple(self.puzzle))
-		heap = deque()
-		heap.append(initial_state)
-		success = False
+	while heap:
+		h, y, x, grid, path = heapq.heappop(heap)
+		depth = len(path)
 
-		while heap and not success:
-			f, d, y, x, puzzle = state = heapq.heappop(heap)
-			if all(i == e for i, e in enumerate(puzzle)): # if is_final
-				success = True
-			else:
-				for substate in self.expand(state, h):
-					heapq.heappush(heap, substate)
+		if grid in seen:
+			continue
 
-		if not success:
-			raise Exception("Failed to solve")
+		if grid == goal:
+			return path
 
-	def __repr__(self) -> str:
-		formatted_puzzle = ""
-		element_format = "{:<" + str(int(log10(self.size * self.size) + 1)) + "}"
-		for line in range(0, len(self.puzzle), self.size):
-			if line:
-				formatted_puzzle += '\n'
-			formatted_puzzle += ' '.join(map(element_format.format, self.puzzle[line: line + self.size]))
-		return f"Puzzle {self.size}x{self.size}\n{formatted_puzzle}"
+		time_complexity += 1
+		space_complexity = max(space_complexity, len(heap))
 
-def deserialize_puzzle(path: str) -> List[int]:
-	raw_puzzle = []
-	with open(path) as puzzle_file:
-		for line in puzzle_file:
-			line = line.strip()
-			comment = line.find('#')
-			if comment != -1:
-				line = line[:comment]
-			if line:
-				raw_puzzle.append(list(map(int, line.split())))
-	return raw_puzzle
+		seen.add(grid)
 
-def bad_place(state):
-	f, d, y, x, puzzle = state
-	return sum(i != e for i, e in enumerate(puzzle))
+		for i, (ny, nx) in enumerate(((y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1))):
+			if 0 <= ny < size and 0 <= nx < size:
+				new_grid = list(grid)
+				# Make the move
+				new_grid[ny * size + nx], new_grid[y * size + x] = new_grid[y * size + x], new_grid[ny * size + nx]
+				new_grid = tuple(new_grid)
+				if not new_grid in seen:
+					heapq.heappush(heap, (heuristic(new_grid, size, goal) + depth, ny, nx, new_grid, path + [(ny, nx, "v^><"[i])]))
+
+	return []
 
 if __name__ == "__main__":
 	parser = ArgumentParser(
-                prog="n-puzzle",
-                description="Solve n-puzzles"
+				prog="n-puzzle",
+				description="Solve n-puzzles"
 	)
 
 	parser.add_argument("puzzle_path", help="Path for the puzzle file")
 	args = parser.parse_args()
 
-	raw_puzzle = deserialize_puzzle(args.puzzle_path)
-	puzzle = Puzzle(raw_puzzle)
-	puzzle.solve(bad_place)
-	print(puzzle)
-	# try:
-	# 	raw_puzzle = deserialize_puzzle(args.puzzle_path)
-	# 	puzzle = Puzzle(raw_puzzle)
-	# 	puzzle.solve(bad_place)
-	# 	print(puzzle)
-	# except Exception as ex:
-	# 	print(f"Error: {ex}", file = sys.stderr)
-	# 	exit(1)
+	raw_puzzle = parsing.deserialize_puzzle(args.puzzle_path)
+	# TODO Check for solvability
+	size, puzzle = parsing.parse_puzzle(raw_puzzle)
+	if utils.is_solvable(puzzle, size):
+		goal = utils.get_goal(size)
+		print_puzzle(puzzle, size)
+		print()
+		solution = astar_solve(tuple(puzzle), size, goal, heuristics.misplaced)
+		print(f"{len(solution) = }")
+		# for y, x, s in solution:
+		# 	print(y, x, s)
+		print_moves(puzzle, size, solution)
+	else:
+		utils.error("Grid is not solvable")
