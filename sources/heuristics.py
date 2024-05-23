@@ -3,9 +3,7 @@ from typing import List
 # TODO May not be admissible
 def manhattan(grid: List[int], size: int, goal: List[int]) -> int:
 	res = 0
-	coords = {}
-	for i, e in enumerate(goal):
-		coords[e] = (i // size, i % size)
+	coords = {e: (i // size, i % size) for i, e in enumerate(goal)}
 	for i, e in enumerate(grid):
 		cury = i // size
 		curx = i % size
@@ -16,9 +14,7 @@ def manhattan(grid: List[int], size: int, goal: List[int]) -> int:
 # TODO May not be admissible
 def squared(grid: List[int], size: int, goal: List[int]) -> int:
 	res = 0
-	coords = {}
-	for i, e in enumerate(goal):
-		coords[e] = (i // size, i % size)
+	coords = {e: (i // size, i % size) for i, e in enumerate(goal)}
 	for i, e in enumerate(grid):
 		cury = i // size
 		curx = i % size

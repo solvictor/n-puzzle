@@ -84,7 +84,7 @@ if __name__ == "__main__":
 		goal = utils.get_goal(size)
 		print_puzzle(puzzle, size)
 		print()
-		solution = astar_solve(tuple(puzzle), size, goal, heuristics.misplaced)
+		solution = astar_solve(tuple(puzzle), size, goal, heuristics.squared)
 		print(f"{len(solution) = }")
 		# for y, x, s in solution:
 		# 	print(y, x, s)
