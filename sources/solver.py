@@ -179,8 +179,6 @@ if __name__ == "__main__":
 			utils.error("Puzzle is not solvable")
 	else:
 		size = args.generate
-		if size < 2:
-			utils.error(f"Cannot generate a puzzle of {size}x{size}")
 		puzzle = generator.generate(size)
 	goal = generator.make_goal(size)
 	print_puzzle(puzzle, size)
