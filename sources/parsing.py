@@ -1,15 +1,15 @@
 from typing import List, Tuple
+from io import TextIOWrapper
 
-def deserialize_puzzle(path: str) -> List[str]:
+def deserialize_puzzle(puzzle_file: TextIOWrapper) -> List[str]:
 	raw_puzzle = []
-	with open(path) as puzzle_file:
-		for line in puzzle_file:
-			comment = line.find('#')
-			if comment != -1:
-				line = line[:comment]
-			line = line.strip().split()
-			if line:
-				raw_puzzle.extend(line)
+	for line in puzzle_file:
+		comment = line.find('#')
+		if comment != -1:
+			line = line[:comment]
+		line = line.strip().split()
+		if line:
+			raw_puzzle.extend(line)
 	return raw_puzzle
 
 def parse_puzzle(raw_puzzle: List[str]) -> Tuple[int, List[int]]:

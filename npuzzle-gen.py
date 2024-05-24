@@ -1,4 +1,4 @@
-#! /mnt/nfs/homes/vegret/.pyenv/versions/2.7.18/bin/python
+#! /home/vegret/.pyenv/versions/2.7.18/bin/python
 
 import sys
 import argparse
