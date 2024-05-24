@@ -149,8 +149,8 @@ def biastar_solve(base_grid, size, goal, heuristic):
 
 if __name__ == "__main__":
 	parser = ArgumentParser(
-				prog="n-puzzle",
-				description="Solve n-puzzles"
+		prog="n-puzzle",
+		description="Solve n-puzzles"
 	)
 
 	group = parser.add_mutually_exclusive_group(required=True)
@@ -179,13 +179,13 @@ if __name__ == "__main__":
 			utils.error("Puzzle is not solvable")
 	else:
 		size = args.generate
-		if size < 1:
+		if size < 2:
 			utils.error(f"Cannot generate a puzzle of {size}x{size}")
 		puzzle = generator.generate(size)
-	goal = utils.get_goal(size)
+	goal = generator.make_goal(size)
 	print_puzzle(puzzle, size)
 	print()
-	solution = astar_solve(tuple(puzzle), size, goal, heuristics.squared)
+	solution = astar_solve(tuple(puzzle), size, tuple(goal), heuristics.squared)
 	print(f"{len(solution) = }")
 	# for y, x, s in solution:
 	# 	print(y, x, s)
