@@ -2,6 +2,7 @@ from typing import List
 import random
 import utils
 
+
 def generate(size: int, iterations: int = 10000) -> List[int]:
 	"""Generate a random solvable size x size puzzle
 
@@ -37,6 +38,7 @@ def generate(size: int, iterations: int = 10000) -> List[int]:
 		zero_idx = swap_empty(puzzle, zero_idx)
 
 	return puzzle
+
 
 def make_goal(size: int) -> List[int]:
 	"""Generate a goal (solved) size x size puzzle

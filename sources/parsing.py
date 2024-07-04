@@ -1,6 +1,7 @@
 from typing import List, Tuple
 from io import TextIOWrapper
 
+
 def deserialize_puzzle(puzzle_file: TextIOWrapper) -> List[str]:
 	"""Extracts the puzzle from the puzzle file
 
@@ -20,6 +21,7 @@ def deserialize_puzzle(puzzle_file: TextIOWrapper) -> List[str]:
 			raw_puzzle.extend(line)
 	puzzle_file.close()
 	return raw_puzzle
+
 
 def parse_puzzle(raw_puzzle: List[str]) -> Tuple[int, List[int]]:
 	"""Convert the 2d puzzle to a 1d grid and checks if it is valid
@@ -42,7 +44,7 @@ def parse_puzzle(raw_puzzle: List[str]) -> Tuple[int, List[int]]:
 
 	if not raw_puzzle:
 		raise Exception("Puzzle cannot be empty")
-	
+
 	size, *puzzle = map(int, raw_puzzle)
 
 	if len(puzzle) != size * size:

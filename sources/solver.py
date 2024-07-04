@@ -1,44 +1,12 @@
-from argparse import ArgumentParser, FileType
-from typing import List, Tuple, Optional
-from math import log10
-import heuristics
-import generator
-import parsing
-import utils
 import heapq
 
-def print_puzzle(puzzle, size, header = True):
-	formatted_puzzle = ""
-	element_format = "{:>" + str(int(log10(size * size) + 1)) + "}"
-	for line in range(0, len(puzzle), size):
-		if line:
-			formatted_puzzle += '\n'
-		formatted_puzzle += ' '.join(map(element_format.format, puzzle[line: line + size]))
-	if header:
-		print(f"Puzzle {size}x{size}")
-	print(formatted_puzzle)
-
-def print_moves(puzzle, size, moves):
-	puzzle = list(puzzle)
-	print_puzzle(puzzle, size)
-	print()
-	start = puzzle.index(0)
-	y = start // size
-	x = start % size
-	for ny, nx, s in moves:
-		print(s)
-		puzzle[ny * size + nx], puzzle[y * size + x] = puzzle[y * size + x], puzzle[ny * size + nx]
-		y, x = ny, nx
-		print_puzzle(puzzle, size, header = False)
-		print()
 
 def astar_solve(base_grid, size, goal, heuristic):
 	space_complexity = 0
 	time_complexity = 0
 
 	start = base_grid.index(0)
-	y = start // size
-	x = start % size
+	y, x = divmod(start, size)
 
 	heap = [(0, y, x, base_grid, [])]
 	seen = set()
@@ -68,9 +36,10 @@ def astar_solve(base_grid, size, goal, heuristic):
 				new_grid = tuple(new_grid)
 				if not new_grid in seen:
 					heapq.heappush(heap, (heuristic(new_grid, size, goal) + depth, ny, nx, new_grid, path + [(ny, nx, "v^><"[i])]))
-	
+
 	print(f"{time_complexity = }\n{space_complexity = }")
 	return best
+
 
 def biastar_solve(base_grid, size, goal, heuristic):
 	space_complexity = 0
@@ -78,15 +47,13 @@ def biastar_solve(base_grid, size, goal, heuristic):
 	best = []
 
 	start = base_grid.index(0)
-	ay = start // size
-	ax = start % size
+	ay, ax = divmod(start, size)
 
 	aheap = [(0, ay, ax, base_grid, [])]
 	aseen = {}
 
 	bstart = goal.index(0)
-	by = bstart // size
-	bx = bstart % size
+	by, bx = divmod(bstart, size)
 
 	bheap = [(0, by, bx, goal, [])]
 	bseen = {}
@@ -142,50 +109,6 @@ def biastar_solve(base_grid, size, goal, heuristic):
 						heapq.heappush(bheap, (heuristic(goal, size, new_grid) + bdepth, ny, nx, new_grid, bpath + [(ny, nx, "v^><"[i])]))
 
 			bseen[bgrid] = bpath
-	
+
 	print(f"{time_complexity = }\n{space_complexity = }")
 	return best
-
-
-if __name__ == "__main__":
-	parser = ArgumentParser(
-		prog="n-puzzle",
-		description="Solve n-puzzles"
-	)
-
-	group = parser.add_mutually_exclusive_group(required=True)
-	group.add_argument(
-		"-g",
-		"--generate",
-		type=int,
-		help="Generate a random puzzle of size NxN",
-		metavar="N"
-	)
-	group.add_argument(
-		"puzzle_path",
-		nargs="?",
-		type=FileType('r'),
-		default=None,
-		help="Path for the puzzle file"
-	)
-
-	args = parser.parse_args()
-
-	if args.generate is None:
-		raw_puzzle = parsing.deserialize_puzzle(args.puzzle_path)
-		size, puzzle = parsing.parse_puzzle(raw_puzzle)
-		# TODO Check for solvability
-		if not utils.is_solvable(puzzle, size):
-			utils.error("Puzzle is not solvable")
-	else:
-		size = args.generate
-		puzzle = generator.generate(size)
-	goal = generator.make_goal(size)
-	print_puzzle(puzzle, size)
-	print()
-	solution = astar_solve(tuple(puzzle), size, tuple(goal), heuristics.squared)
-	print(f"{len(solution) = }")
-	# for y, x, s in solution:
-	# 	print(y, x, s)
-	# print_moves(puzzle, size, solution)
-
