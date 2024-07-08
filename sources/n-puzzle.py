@@ -4,6 +4,8 @@ import generator
 import parsing
 import utils
 import solver
+import visualizer
+import time
 
 
 if __name__ == "__main__":
@@ -27,6 +29,25 @@ if __name__ == "__main__":
         default=None,
         help="Path for the puzzle file"
     )
+    parser.add_argument(
+        "--visualize",
+        help="Visualize the solution with a window",
+        action="store_true"
+    )
+    parser.add_argument(
+        "--algorithm",
+        type=str,
+        help=f"Choose the solver algorithm. Defaults to {solver.DEFAULT}.",
+        choices=solver.NAMES,
+        default=solver.DEFAULT
+    )
+    parser.add_argument(
+        "--heuristic",
+        type=str,
+        help=f"Choose the heuristic function. Defaults to {heuristics.DEFAULT}.",
+        choices=heuristics.NAMES,
+        default=heuristics.DEFAULT
+    )
 
     args = parser.parse_args()
 
@@ -37,6 +58,8 @@ if __name__ == "__main__":
         size = args.generate
         puzzle = generator.generate(size)
 
+    heuristic = heuristics.NAMES[args.heuristic]
+    algorithm = solver.NAMES[args.algorithm]
     goal = generator.make_goal(size)
 
     # TODO Check for solvability
@@ -45,16 +68,21 @@ if __name__ == "__main__":
 
     utils.print_puzzle(puzzle, size)
     # utils.print_puzzle(goal, size)
-    print()
-    print("a-star")
-    solution = solver.astar_solve(tuple(puzzle), size, tuple(goal), heuristics.squared)
-    print(f"{len(solution) = }")
 
     print()
-    print("bi-a-star")
-    solution = solver.biastar_solve(tuple(puzzle), size, tuple(goal), heuristics.squared)
-    # solution = solver.biastar_solve(tuple(puzzle), size, tuple(goal), heuristics.squared)
-    print(f"{len(solution) = }")
+    start = time.time()
+    solution, time_complexity, space_complexity = algorithm(tuple(puzzle), size, tuple(goal), heuristic)
+    # solution = solver.biastar(tuple(puzzle), size, tuple(goal), heuristics.squared)
+
+    end = time.time()
+    print(f"Solution found in {end - start:.5}s using {args.algorithm}")
+    print("Heuristic:", args.heuristic)
+    print("Moves:", len(solution))
+    print("Time Complexity:", time_complexity)
+    print("Space Complexity:", space_complexity)
     # for y, x, s in solution:
-    # 	print(y, x, s)
-    # print_moves(puzzle, size, solution)
+    #     print(y, x, s)
+    # utils.print_moves(puzzle, size, solution)
+
+    if args.visualize:
+        visualizer.start(puzzle, size, solution)

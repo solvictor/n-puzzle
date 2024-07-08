@@ -1,7 +1,7 @@
 import heapq
 
 
-def astar_solve(base_grid, size, goal, heuristic):
+def astar(base_grid, size, goal, heuristic):
     space_complexity = 0
     time_complexity = 0
 
@@ -37,11 +37,11 @@ def astar_solve(base_grid, size, goal, heuristic):
                 if not new_grid in seen:
                     heapq.heappush(heap, (heuristic(new_grid, size, goal) + depth, ny, nx, new_grid, path + [(ny, nx, "v^><"[i])]))
 
-    print(f"{time_complexity = }\n{space_complexity = }")
-    return best
+    return best, time_complexity, space_complexity
 
 
-def biastar_solve(base_grid, size, goal, heuristic):
+# TODO Fix
+def biastar(base_grid, size, goal, heuristic):
     space_complexity = 0
     time_complexity = 0
     best = []
@@ -65,23 +65,16 @@ def biastar_solve(base_grid, size, goal, heuristic):
         adepth = len(apath)
         bdepth = len(bpath)
 
-        if agrid in bseen:
-            print("agrid in bseen", len(apath), len(bseen[agrid]))
-            best = apath + bseen[agrid]
-            break
-
-        if bgrid in aseen:
-            print("bgrid in aseen", len(bpath), len(aseen[bgrid]))
-            best = aseen[bgrid] + bpath[::-1]
+        if bgrid == base_grid:
+            print("bgrid == base_grid")
+            best = bpath[::-1]
             break
 
         if agrid == goal:
+            print("agrid == goal")
             best = apath
             break
 
-        if bgrid == base_grid:
-            best = bpath
-            break
 
         time_complexity += 1
         space_complexity = max(space_complexity, len(aheap) + len(bheap))
@@ -110,5 +103,8 @@ def biastar_solve(base_grid, size, goal, heuristic):
 
             bseen[bgrid] = bpath
 
-    print(f"{time_complexity = }\n{space_complexity = }")
-    return best
+    return best, time_complexity, space_complexity
+
+
+DEFAULT = "astar"
+NAMES = {f.__name__: f for f in (astar, biastar)}

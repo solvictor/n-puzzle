@@ -26,3 +26,7 @@ def squared(grid: List[int], size: int, goal: List[int]) -> int:
 # TODO May not be admissible
 def misplaced(grid: List[int], size: int, goal: List[int]) -> int:
     return sum(a != b for a, b in zip(grid, goal))
+
+
+DEFAULT = "misplaced"
+NAMES = {f.__name__: f for f in (manhattan, squared, misplaced)}
