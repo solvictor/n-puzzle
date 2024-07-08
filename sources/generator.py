@@ -49,6 +49,7 @@ def make_goal(size: int) -> List[int]:
     Returns:
         List[int]: Goal puzzle
     """
+
     goal = [0] * (size * size)
     y = x = 0
     dy, dx = 0, 1

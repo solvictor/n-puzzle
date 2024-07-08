@@ -29,6 +29,7 @@ if __name__ == "__main__":
         default=None,
         help="Path for the puzzle file"
     )
+
     parser.add_argument(
         "--visualize",
         help="Visualize the solution with a window",
@@ -72,17 +73,14 @@ if __name__ == "__main__":
     print()
     start = time.time()
     solution, time_complexity, space_complexity = algorithm(tuple(puzzle), size, tuple(goal), heuristic)
-    # solution = solver.biastar(tuple(puzzle), size, tuple(goal), heuristics.squared)
-
     end = time.time()
+
     print(f"Solution found in {end - start:.5}s using {args.algorithm}")
     print("Heuristic:", args.heuristic)
     print("Moves:", len(solution))
     print("Time Complexity:", time_complexity)
     print("Space Complexity:", space_complexity)
-    # for y, x, s in solution:
-    #     print(y, x, s)
-    # utils.print_moves(puzzle, size, solution)
 
+    # utils.print_moves(puzzle, size, solution)
     if args.visualize:
         visualizer.start(puzzle, size, solution)

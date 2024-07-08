@@ -11,7 +11,8 @@ class Visualizer:
         self.tile_color = tile_color
         self.tile_text_color = tile_text_color
         self.font_size = font_size
-        self.font = pygame.font.SysFont("Consolas", font_size) # TODO Test a 42
+        self.border = 2
+        self.font = pygame.font.SysFont("Consolas", font_size)  # TODO Test a 42
         self.screen = pygame.display.set_mode((self.grid_size, self.grid_size))
         pygame.display.set_caption("n-puzzle")
 
@@ -19,7 +20,7 @@ class Visualizer:
         if number == 0:
             return
         x, y = position
-        rect = pygame.Rect(x * self.tile_size, y * self.tile_size, self.tile_size - 2, self.tile_size - 2)
+        rect = pygame.Rect(x * self.tile_size + self.border // 2, y * self.tile_size + self.border // 2, self.tile_size - self.border, self.tile_size - self.border)
         pygame.draw.rect(self.screen, self.tile_color, rect, border_radius=20)
         text = self.font.render(str(number), True, self.tile_text_color)
         text_rect = text.get_rect(center=rect.center)
@@ -34,7 +35,9 @@ class Visualizer:
 
     def apply_move(self, board, move):
         empty = board.index(0)
-        new_y, new_x, _ = move
+        y, x = divmod(empty, self.size)
+        new_y = y + (1 if move == 'v' else -1 if move == '^' else 0)
+        new_x = x + (1 if move == '>' else -1 if move == '<' else 0)
         if 0 <= new_x < self.size and 0 <= new_y < self.size:
             new_index = new_y * self.size + new_x
             board[empty], board[new_index] = board[new_index], board[empty]

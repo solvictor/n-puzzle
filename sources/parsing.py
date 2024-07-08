@@ -11,6 +11,7 @@ def deserialize_puzzle(puzzle_file: TextIOWrapper) -> List[str]:
     Returns:
         List[str]: Lines of the puzzle file
     """
+
     raw_puzzle = []
     for line in puzzle_file:
         comment = line.find('#')
@@ -39,6 +40,7 @@ def parse_puzzle(raw_puzzle: List[str]) -> Tuple[int, List[int]]:
     Returns:
         Tuple[int, List[int]]: Size and parsed puzzle
     """
+
     if not all(e.isdigit() for e in raw_puzzle):
         raise Exception("Puzzle must be made of numbers only")
 
