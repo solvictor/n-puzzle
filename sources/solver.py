@@ -89,7 +89,7 @@ def bdastar(base_grid, size, goal, heuristic):
         space_complexity = max(space_complexity, len(aheap) + len(bheap))
 
         # Expand path from start
-        if not agrid in aseen:
+        if not agrid in aseen or len(aseen[agrid]) >= len(apath):
             for ny, nx, s in ((ay + 1, ax, 'v'), (ay - 1, ax, '^'), (ay, ax + 1, '>'), (ay, ax - 1, '<')):
                 if 0 <= ny < size and 0 <= nx < size:
                     new_grid = list(agrid)
@@ -101,7 +101,7 @@ def bdastar(base_grid, size, goal, heuristic):
             aseen[agrid] = apath
 
         # Expand path from end
-        if not bgrid in bseen:
+        if not bgrid in bseen or len(bseen[bgrid]) >= len(bpath):
             for ny, nx, s in ((by + 1, bx, 'v'), (by - 1, bx, '^'), (by, bx + 1, '>'), (by, bx - 1, '<')):
                 if 0 <= ny < size and 0 <= nx < size:
                     new_grid = list(bgrid)
