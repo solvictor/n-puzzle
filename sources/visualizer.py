@@ -12,7 +12,7 @@ class Visualizer:
         self.tile_text_color = tile_text_color
         self.font_size = font_size
         self.border = 2
-        self.font = pygame.font.SysFont("Consolas", font_size)  # TODO Test a 42
+        self.font = pygame.font.SysFont("Consolas", font_size)
         self.screen = pygame.display.set_mode((self.grid_size, self.grid_size))
         pygame.display.set_caption("n-puzzle")
 
