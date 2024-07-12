@@ -35,6 +35,12 @@ if __name__ == "__main__":
         action="store_true"
     )
     parser.add_argument(
+        "--speed",
+        help="Change visualizer speed",
+        type=int,
+        default=5
+    )
+    parser.add_argument(
         "--algorithm",
         type=str,
         help=f"Choose the solver algorithm. Defaults to {solver.DEFAULT}.",
@@ -81,4 +87,4 @@ if __name__ == "__main__":
 
     # utils.print_moves(puzzle, size, solution)
     if args.visualize:
-        visualizer.start(puzzle, height, width, solution)
+        visualizer.start(puzzle, height, width, solution, args.speed)

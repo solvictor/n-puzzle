@@ -1,4 +1,5 @@
 from typing import List
+import math
 
 
 def manhattan(grid: List[int], width: int, gpos) -> int:
@@ -19,7 +20,7 @@ def euclidean(grid: List[int], width: int, gpos) -> int:
             continue
         cury, curx = divmod(i, width)
         targety, targetx = gpos[e]
-        res += (curx - targetx)**2 + (cury - targety)**2
+        res += math.hypot(curx - targetx, cury - targety)
     return res
 
 

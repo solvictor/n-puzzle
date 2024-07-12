@@ -1,6 +1,10 @@
 import pygame
 
 
+def gradient(x, height, width):
+    return (x * 255 // (height * width), 130, 200)
+
+
 class Visualizer:
     def __init__(self, height, width, tile_size=100, background_color=(0, 0, 0), tile_color=(255, 255, 255), tile_text_color=(0, 0, 0), font_size=36):
         self.width = width
@@ -13,7 +17,7 @@ class Visualizer:
         self.tile_text_color = tile_text_color
         self.font_size = font_size
         self.border = 2
-        self.font = pygame.font.SysFont("Consolas", font_size)
+        self.font = pygame.font.SysFont("Monocraft", font_size)
         self.screen = pygame.display.set_mode((self.grid_width, self.grid_height))
         pygame.display.set_caption("n-puzzle")
 
@@ -23,7 +27,7 @@ class Visualizer:
         x, y = position
         rect = pygame.Rect(x * self.tile_size + self.border // 2, y * self.tile_size + self.border // 2, self.tile_size - self.border, self.tile_size - self.border)
         pygame.draw.rect(self.screen, self.tile_color, rect, border_radius=20)
-        text = self.font.render(str(number), True, self.tile_text_color)
+        text = self.font.render(str(number), True, gradient(number, self.height, self.width))
         text_rect = text.get_rect(center=rect.center)
         self.screen.blit(text, text_rect)
 
@@ -43,7 +47,7 @@ class Visualizer:
             new_index = new_y * self.width + new_x
             board[empty], board[new_index] = board[new_index], board[empty]
 
-    def start(self, puzzle, solution):
+    def start(self, puzzle, solution, speed):
         clock = pygame.time.Clock()
         move_index = 0
 
@@ -66,16 +70,16 @@ class Visualizer:
             if move_index < len(solution):
                 self.apply_move(puzzle, solution[move_index])
                 move_index += 1
-                clock.tick(5)
+                clock.tick(speed)
             else:
                 clock.tick(60)
 
             self.draw_board(puzzle)
 
 
-def start(puzzle, height, width, solution):
+def start(puzzle, height, width, solution, speed):
     visu = Visualizer(height, width, background_color=(93, 115, 126), tile_text_color=(218, 255, 239), tile_color=(100, 182, 172))
-    visu.start(puzzle, solution)
+    visu.start(puzzle, solution, speed)
 
 
 pygame.init()
