@@ -18,9 +18,8 @@ if __name__ == "__main__":
     group.add_argument(
         "-g",
         "--generate",
-        type=int,
-        help="Generate a random puzzle of size NxN",
-        metavar="N"
+        type=str,
+        help="Generate a random puzzle of size NxN or NxM"
     )
     group.add_argument(
         "puzzle_path",
@@ -54,28 +53,27 @@ if __name__ == "__main__":
 
     if args.generate is None:
         raw_puzzle = parsing.deserialize_puzzle(args.puzzle_path)
-        size, puzzle = parsing.parse_puzzle(raw_puzzle)
+        height, width, puzzle = parsing.parse_puzzle(raw_puzzle)
     else:
-        size = args.generate
-        puzzle = generator.generate(size)
+        height, width = parsing.parse_dimensions(args.generate)
+        puzzle = generator.generate(height, width)
 
     heuristic = heuristics.NAMES[args.heuristic]
     algorithm = solver.NAMES[args.algorithm]
-    goal = generator.make_goal(size)
+    goal = generator.make_goal(height, width)
 
-    # TODO Check for solvability
-    if not utils.is_solvable(puzzle, goal, size):
+    if not utils.is_solvable(puzzle, goal, height, width):
         utils.error("Puzzle is not solvable")
 
-    utils.print_puzzle(puzzle, size)
+    utils.print_puzzle(puzzle, height, width)
     # utils.print_puzzle(goal, size)
 
     print()
     start = time.time()
-    solution, time_complexity, space_complexity = algorithm(tuple(puzzle), size, tuple(goal), heuristic)
+    solution, time_complexity, space_complexity = algorithm(tuple(puzzle), height, width, tuple(goal), heuristic)
     end = time.time()
 
-    print(f"Solution found in {end - start:.5}s using {args.algorithm}")
+    print(f"Solution found in {end - start:.3f}s using {args.algorithm}")
     print("Heuristic:", args.heuristic)
     print("Moves:", len(solution))
     print("Time Complexity:", time_complexity)
@@ -83,4 +81,4 @@ if __name__ == "__main__":
 
     # utils.print_moves(puzzle, size, solution)
     if args.visualize:
-        visualizer.start(puzzle, size, solution)
+        visualizer.start(puzzle, height, width, solution)

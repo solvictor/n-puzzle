@@ -1,32 +1,47 @@
 from typing import List
 
 
-# TODO May not be admissible
-def manhattan(grid: List[int], size: int, goal: List[int]) -> int:
+def manhattan(grid: List[int], width: int, gpos) -> int:
     res = 0
-    coords = {e: divmod(i, size) for i, e in enumerate(goal)}
     for i, e in enumerate(grid):
-        cury, curx = divmod(i, size)
-        targety, targetx = coords[e]
+        if e == 0:
+            continue
+        cury, curx = divmod(i, width)
+        targety, targetx = gpos[e]
         res += abs(curx - targetx) + abs(cury - targety)
     return res
 
 
-# TODO May not be admissible
-def squared(grid: List[int], size: int, goal: List[int]) -> int:
+def euclidean(grid: List[int], width: int, gpos) -> int:
     res = 0
-    coords = {e: divmod(i, size) for i, e in enumerate(goal)}
     for i, e in enumerate(grid):
-        cury, curx = divmod(i, size)
-        targety, targetx = coords[e]
+        if e == 0:
+            continue
+        cury, curx = divmod(i, width)
+        targety, targetx = gpos[e]
         res += (curx - targetx)**2 + (cury - targety)**2
     return res
 
 
-# TODO May not be admissible
-def misplaced(grid: List[int], size: int, goal: List[int]) -> int:
-    return sum(a != b for a, b in zip(grid, goal))
+def chebyshev(grid: List[int], width: int, gpos) -> int:
+    res = 0
+    for i, e in enumerate(grid):
+        if e == 0:
+            continue
+        cury, curx = divmod(i, width)
+        targety, targetx = gpos[e]
+        res += max(abs(curx - targetx), abs(cury - targety))
+    return res
 
 
-DEFAULT = "misplaced"
-NAMES = {f.__name__: f for f in (manhattan, squared, misplaced)}
+def misplaced(grid: List[int], width: int, gpos) -> int:
+    return sum(divmod(i, width) != gpos[e] for i, e in enumerate(grid) if e)
+
+
+def manhattan_with_lc(grid: List[int], width: int, gpos) -> int:
+    lc = 0  # Linear conflics
+    return manhattan(grid, width, gpos) + 2 * lc
+
+
+DEFAULT = "euclidean"
+NAMES = {f.__name__: f for f in (manhattan, euclidean, misplaced, chebyshev)}
