@@ -75,15 +75,15 @@ if __name__ == "__main__":
     # utils.print_puzzle(goal, size)
 
     print()
+    print("Searching for a solution using", args.algorithm, "algorithm and", args.heuristic, "heuristic.")
     start = time.time()
     solution, time_complexity, space_complexity = algorithm(tuple(puzzle), height, width, tuple(goal), heuristic)
     end = time.time()
 
-    print(f"Solution found in {end - start:.3f}s using {args.algorithm}")
-    print("Heuristic:", args.heuristic)
-    print("Moves:", len(solution))
+    print(f"Solution of {len(solution)} moves found in {end - start:.3f}s using {args.algorithm}")
     print("Time Complexity:", time_complexity)
     print("Space Complexity:", space_complexity)
+    print("Moves:", *solution)
 
     # utils.print_moves(puzzle, size, solution)
     if args.visualize:
