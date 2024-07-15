@@ -12,7 +12,7 @@ import sys
 if __name__ == "__main__":
     parser = ArgumentParser(
         prog="n-puzzle",
-        description="Solve n-puzzles"
+        description="Solve n-puzzles."
     )
 
     group = parser.add_mutually_exclusive_group(required=True)
@@ -21,30 +21,31 @@ if __name__ == "__main__":
         "--generate",
         metavar='N',
         type=str,
-        help="Generate a random puzzle of size NxN or NxM"
+        help="Generate a random puzzle of size NxN or NxM."
     )
     group.add_argument(
         "puzzle",
         nargs="?",
         type=FileType('r'),
         default=None,
-        help="Path for the puzzle file"
+        help="Path for the puzzle file."
     )
 
     parser.add_argument(
         "--goal",
+        metavar="GOAL_PATH",
         type=FileType('r'),
         default=None,
-        help="Path for the goal file"
+        help="Path for the goal file. Defaults to spiral pattern."
     )
     parser.add_argument(
         "--visualize",
-        help="Visualize the solution with a window",
+        help="Visualize the solution with a window.",
         action="store_true"
     )
     parser.add_argument(
         "--speed",
-        help="Change visualizer speed",
+        help="Change visualizer speed. Defaults to 5.",
         type=int,
         default=5
     )
