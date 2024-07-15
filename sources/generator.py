@@ -1,6 +1,5 @@
 from typing import List
 import random
-import utils
 
 
 def generate(height: int, width: int, iterations: int = 10000) -> List[int]:
@@ -11,12 +10,15 @@ def generate(height: int, width: int, iterations: int = 10000) -> List[int]:
         width (int): Number of columns in the puzzle
         iterations (int, optional): Number of times the puzzle is shuffled. Defaults to 10000.
 
+    Raises:
+        RuntimeError: If dimensions are invalid
+
     Returns:
         List[int]: A random puzzle
     """
 
     if height * width < 1:
-        utils.error(f"Cannot generate a puzzle of {height}x{width}")
+        raise RuntimeError(f"Cannot generate a puzzle of {height}x{width}")
     elif height * width == 1:
         return [0]
 

@@ -1,6 +1,5 @@
 from typing import List
 from math import log10
-import sys
 
 
 def inversions_parity(puzzle: List[int]) -> int:
@@ -45,12 +44,6 @@ def is_solvable(puzzle: List[int], goal: List[int], height: int, width: int) -> 
     parity_puzzle = inversions_parity(puzzle)
     parity_goal = inversions_parity(goal)
     return parity_empty == (parity_puzzle ^ parity_goal)
-
-
-def error(*args, **kwargs):
-    """Output an error message on standard error and exit with error code"""
-    print(*args, **kwargs, file=sys.stderr)
-    exit(1)
 
 
 def print_puzzle(puzzle: List[int], height: int, width: int, header: bool = True) -> None:

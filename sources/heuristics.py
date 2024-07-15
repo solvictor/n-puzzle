@@ -2,7 +2,7 @@ from typing import List
 import math
 
 
-def manhattan(grid: List[int], width: int, gpos) -> int:
+def manhattan(grid: List[int], width: int, gpos) -> float:
     res = 0
     for i, e in enumerate(grid):
         if e == 0:
@@ -13,7 +13,7 @@ def manhattan(grid: List[int], width: int, gpos) -> int:
     return res
 
 
-def euclidean(grid: List[int], width: int, gpos) -> int:
+def euclidean(grid: List[int], width: int, gpos) -> float:
     res = 0
     for i, e in enumerate(grid):
         if e == 0:
@@ -24,7 +24,7 @@ def euclidean(grid: List[int], width: int, gpos) -> int:
     return res
 
 
-def chebyshev(grid: List[int], width: int, gpos) -> int:
+def chebyshev(grid: List[int], width: int, gpos) -> float:
     res = 0
     for i, e in enumerate(grid):
         if e == 0:
@@ -35,14 +35,15 @@ def chebyshev(grid: List[int], width: int, gpos) -> int:
     return res
 
 
-def misplaced(grid: List[int], width: int, gpos) -> int:
+def misplaced(grid: List[int], width: int, gpos) -> float:
     return sum(divmod(i, width) != gpos[e] for i, e in enumerate(grid) if e)
 
 
-def manhattan_with_lc(grid: List[int], width: int, gpos) -> int:
+def manhattan_with_lc(grid: List[int], width: int, gpos) -> float:
     lc = 0  # Linear conflics
     return manhattan(grid, width, gpos) + 2 * lc
 
+# TODO Pattern database
 
 DEFAULT = "euclidean"
 NAMES = {f.__name__: f for f in (manhattan, euclidean, misplaced, chebyshev)}

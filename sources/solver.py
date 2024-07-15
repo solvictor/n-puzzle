@@ -158,5 +158,7 @@ def bd_uniform_cost(base_grid, height, width, goal, heuristic):
     return bd_astar(base_grid, height, width, goal, heuristic, use_g=True, use_h=False)
 
 
+# TODO Ida abd bd-Ida solvers
+
 DEFAULT = "astar"
 NAMES = {f.__name__: f for f in (astar, greedy, uniform_cost, bd_astar, bd_greedy, bd_uniform_cost)}
