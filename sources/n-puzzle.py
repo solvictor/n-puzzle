@@ -1,4 +1,5 @@
 from argparse import ArgumentParser, FileType
+from operator import itemgetter
 import heuristics
 import visualizer
 import generator
@@ -92,6 +93,8 @@ if __name__ == "__main__":
         utils.print_puzzle(puzzle, height, width)
         # utils.print_puzzle(goal, size)
 
+        scores = {}
+
         for algo_name in args.algorithm:
             heuristic = heuristics.NAMES[args.heuristic]
             algorithm = solver.NAMES[algo_name]
@@ -102,6 +105,8 @@ if __name__ == "__main__":
             solution, time_complexity, space_complexity = algorithm(tuple(puzzle), height, width, tuple(goal), heuristic)
             end = time.time()
 
+            scores[algo_name] = (end - start, len(solution), time_complexity, space_complexity)
+
             print(f"Solution of {len(solution)} moves found in {end - start:.3f}s using {algo_name}")
             print("Time Complexity:", time_complexity)
             print("Space Complexity:", space_complexity)
@@ -110,6 +115,13 @@ if __name__ == "__main__":
             # utils.print_moves(puzzle, size, solution)
             if args.visualize:
                 visualizer.start(puzzle, height, width, solution, args.speed)
+
+        if len(args.algorithm) > 1:
+            categories = (("Time", "s"), ("Moves", " moves"), ("Time Complexity", " operations"), ("Space Complexity", " maximum simultaneous states"))
+
+            for i, (category, unit) in enumerate(categories):
+                best = min(scores, key=itemgetter(i))
+                print(f"Best algorithm by {category}: {best} ({scores[best][i]}{unit})")
 
     except Exception as ex:
         print(f"n-puzzle: {ex.__class__.__name__}: {ex}", file=sys.stderr)
