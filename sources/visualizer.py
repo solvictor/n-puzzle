@@ -82,8 +82,7 @@ class Visualizer:
 
 
 def start(puzzle, height, width, solution, speed):
+    pygame.init()
+    puzzle = puzzle.copy()
     visu = Visualizer(height, width, background_color=(93, 115, 126), tile_text_color=(218, 255, 239), tile_color=(100, 182, 172))
     visu.start(puzzle, solution, speed)
-
-
-pygame.init()

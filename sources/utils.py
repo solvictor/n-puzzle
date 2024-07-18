@@ -104,4 +104,4 @@ def invert_moves(moves: str) -> str:
     """
 
     inv = {'^': 'v', 'v': '^', '<': '>', '>': '<'}
-    return ''.join(inv[m] for m in moves)
+    return ''.join(inv.get(m, '?') for m in moves)

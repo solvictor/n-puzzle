@@ -1,10 +1,11 @@
 from argparse import ArgumentParser, FileType
 import heuristics
+import visualizer
 import generator
 import parsing
-import utils
 import solver
-import visualizer
+import signal
+import utils
 import time
 import sys
 
@@ -52,9 +53,10 @@ if __name__ == "__main__":
     parser.add_argument(
         "--algorithm",
         type=str,
-        help=f"Choose the solver algorithm. Defaults to {solver.DEFAULT}.",
+        help=f"Choose the solver algorithm(s). Defaults to {solver.DEFAULT}.",
         choices=solver.NAMES,
-        default=solver.DEFAULT
+        default=solver.DEFAULT,
+        nargs='+'
     )
     parser.add_argument(
         "--heuristic",
@@ -67,6 +69,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     try:
+        signal.signal(signal.SIGINT, lambda *_: (print("\033[2Dn-puzzle: error: computation ended by user."), exit(1)))
+
         if args.generate is None:
             raw_puzzle = parsing.deserialize_puzzle(args.puzzle)
             height, width, puzzle = parsing.parse_puzzle(raw_puzzle)
@@ -82,29 +86,31 @@ if __name__ == "__main__":
             if gheight != height or gwidth != width:
                 raise RuntimeError("Invalid goal dimensions")
 
-        heuristic = heuristics.NAMES[args.heuristic]
-        algorithm = solver.NAMES[args.algorithm]
-
         if not utils.is_solvable(puzzle, goal, height, width):
             raise RuntimeError("Puzzle is not solvable")
 
         utils.print_puzzle(puzzle, height, width)
         # utils.print_puzzle(goal, size)
 
-        print()
-        print(f"Searching for a solution using {args.algorithm} algorithm and {args.heuristic} heuristic.")
-        start = time.time()
-        solution, time_complexity, space_complexity = algorithm(tuple(puzzle), height, width, tuple(goal), heuristic)
-        end = time.time()
+        for algo_name in args.algorithm:
+            heuristic = heuristics.NAMES[args.heuristic]
+            algorithm = solver.NAMES[algo_name]
 
-        print(f"Solution of {len(solution)} moves found in {end - start:.3f}s using {args.algorithm}")
-        print("Time Complexity:", time_complexity)
-        print("Space Complexity:", space_complexity)
-        print("Moves:", *solution)
+            print()
+            print(f"Searching for a solution using {algo_name} algorithm and {args.heuristic} heuristic.")
+            start = time.time()
+            solution, time_complexity, space_complexity = algorithm(tuple(puzzle), height, width, tuple(goal), heuristic)
+            end = time.time()
 
-        # utils.print_moves(puzzle, size, solution)
-        if args.visualize:
-            visualizer.start(puzzle, height, width, solution, args.speed)
+            print(f"Solution of {len(solution)} moves found in {end - start:.3f}s using {algo_name}")
+            print("Time Complexity:", time_complexity)
+            print("Space Complexity:", space_complexity)
+            print("Moves:", *solution)
+
+            # utils.print_moves(puzzle, size, solution)
+            if args.visualize:
+                visualizer.start(puzzle, height, width, solution, args.speed)
+
     except Exception as ex:
-        print(ex, file=sys.stderr)
+        print(f"n-puzzle: {ex.__class__.__name__}: {ex}", file=sys.stderr)
         exit(1)

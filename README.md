@@ -19,7 +19,7 @@ python3 sources/n-puzzle.py -h
   - [x] A*
   - [x] Uniform-Cost Search
   - [x] Greedy Search
-  - [ ] Iterative deepening A*
+  - [x] Iterative deepening A*
   - [x] Bidirectionnal A*
   - [x] Bidirectionnal Uniform-Cost Search
   - [x] Bidirectionnal Greedy Search
@@ -40,3 +40,5 @@ python3 sources/n-puzzle.py -h
   - [x] Custom goal handling
   - [x] Display computing time, space and time complexities, solution size and moves
   - [x] Solvability check
+  - [x] Support for multiple input algorithms (executed in a row)
+  - [x] CTRL-C Handling

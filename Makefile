@@ -1,8 +1,6 @@
 NAME = n-puzzle
 PROJECT_NAME = n-puzzle
 
-RM = rm -f
-
 # Utils
 ERASE_L = \033[K
 CURS_UP = \033[A
@@ -36,6 +34,9 @@ BWHITE = \033[1;37m
 
 # Bg colors
 GREEN_BG = \033[48;5;2m
+
+help:
+	@python3 sources/n-puzzle.py -h
 
 clean:
 	@find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete

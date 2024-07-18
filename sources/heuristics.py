@@ -45,5 +45,6 @@ def manhattan_with_lc(grid: List[int], width: int, gpos) -> float:
 
 # TODO Pattern database
 
+
 DEFAULT = "euclidean"
 NAMES = {f.__name__: f for f in (manhattan, euclidean, misplaced, chebyshev)}
