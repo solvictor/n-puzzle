@@ -56,7 +56,7 @@ if __name__ == "__main__":
         type=str,
         help=f"Choose the solver algorithm(s). Defaults to {solver.DEFAULT}.",
         choices=solver.NAMES,
-        default=solver.DEFAULT,
+        default=[solver.DEFAULT],
         nargs='+'
     )
     parser.add_argument(
@@ -110,15 +110,21 @@ if __name__ == "__main__":
             print(f"Solution of {len(solution)} moves found in {end - start:.3f}s using {algo_name}")
             print("Time Complexity:", time_complexity)
             print("Space Complexity:", space_complexity)
-            print("Moves:", *solution)
+            print("Moves:", *solution if solution else (None,))
 
             # utils.print_moves(puzzle, size, solution)
             if args.visualize:
                 visualizer.start(puzzle, height, width, solution, args.speed)
 
         if len(args.algorithm) > 1:
-            categories = (("Time", "s"), ("Moves", " moves"), ("Time Complexity", " operations"), ("Space Complexity", " maximum simultaneous states"))
+            categories = (
+                ("Time", "s"),
+                ("Moves", " moves"),
+                ("Time Complexity", " operations"),
+                ("Space Complexity", " maximum simultaneous states")
+            )
 
+            print("\n――――― Ranking ―――――")
             for i, (category, unit) in enumerate(categories):
                 best = min(scores, key=itemgetter(i))
                 print(f"Best algorithm by {category}: {best} ({scores[best][i]}{unit})")

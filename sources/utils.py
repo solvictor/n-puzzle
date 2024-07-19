@@ -26,7 +26,6 @@ def inversions_parity(puzzle: List[int]) -> int:
     return inv
 
 
-# TODO Check with custom goals
 def is_solvable(puzzle: List[int], goal: List[int], height: int, width: int) -> bool:
     """Checks whether a given puzzle is solvable
 
@@ -41,7 +40,8 @@ def is_solvable(puzzle: List[int], goal: List[int], height: int, width: int) -> 
     """
 
     sy, sx = divmod(puzzle.index(0), width)
-    parity_empty = (len(puzzle) ^ sy ^ sx ^ 1) & 1
+    gy, gx = divmod(goal.index(0), width)
+    parity_empty = (len(puzzle) ^ sy ^ sx ^ gy ^ gx) & 1
     parity_puzzle = inversions_parity(puzzle)
     parity_goal = inversions_parity(goal)
     return parity_empty == (parity_puzzle ^ parity_goal)

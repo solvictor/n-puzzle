@@ -41,4 +41,5 @@ python3 sources/n-puzzle.py -h
   - [x] Display computing time, space and time complexities, solution size and moves
   - [x] Solvability check
   - [x] Support for multiple input algorithms (executed in a row)
+  - [x] Ranking on multiple algorithms
   - [x] CTRL-C Handling
