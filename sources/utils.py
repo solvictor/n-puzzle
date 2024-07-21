@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Generator, Tuple
 from math import log10
 
 
@@ -26,13 +26,12 @@ def inversions_parity(puzzle: List[int]) -> int:
     return inv
 
 
-def is_solvable(puzzle: List[int], goal: List[int], height: int, width: int) -> bool:
+def is_solvable(puzzle: List[int], goal: List[int], width: int) -> bool:
     """Checks whether a given puzzle is solvable
 
     Args:
         puzzle (List[int]): Puzzle initial state
         goal (List[int]): Puzzle final state
-        height (int): Number of rows in the puzzle
         width (int): Number of columns in the puzzle
 
     Returns:
@@ -41,7 +40,7 @@ def is_solvable(puzzle: List[int], goal: List[int], height: int, width: int) -> 
 
     sy, sx = divmod(puzzle.index(0), width)
     gy, gx = divmod(goal.index(0), width)
-    parity_empty = (len(puzzle) ^ sy ^ sx ^ gy ^ gx) & 1
+    parity_empty = (sy ^ sx ^ gy ^ gx) & 1
     parity_puzzle = inversions_parity(puzzle)
     parity_goal = inversions_parity(goal)
     return parity_empty == (parity_puzzle ^ parity_goal)
@@ -105,3 +104,27 @@ def invert_moves(moves: str) -> str:
 
     inv = {'^': 'v', 'v': '^', '<': '>', '>': '<'}
     return ''.join(inv.get(m, '?') for m in moves)
+
+
+def moves(y: int, x: int, height: int, width: int, last: str) -> Generator[Tuple[int, int, str], None, None]:
+    """Get possible move from a position, avoiding cancellation of previous move
+
+    Args:
+        y (int): y position
+        x (int): x position
+        height (int): Number of rows in the puzzle
+        width (int): Number of columns in the puzzle
+        last (str): Last move (^v><)
+
+    Yields:
+        Tuple[int, int, str]: new y and x position with the corresponding symbol
+    """
+
+    if last:
+        last = last[-1]
+
+    inv_last = invert_moves(last)
+
+    for ny, nx, s in ((y + 1, x, 'v'), (y - 1, x, '^'), (y, x + 1, '>'), (y, x - 1, '<')):
+        if 0 <= ny < height and 0 <= nx < width and s != inv_last:
+            yield (ny, nx, s)

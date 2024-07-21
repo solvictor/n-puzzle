@@ -1,5 +1,4 @@
 from argparse import ArgumentParser, FileType
-from operator import itemgetter
 import heuristics
 import visualizer
 import generator
@@ -62,9 +61,10 @@ if __name__ == "__main__":
     parser.add_argument(
         "--heuristic",
         type=str,
-        help=f"Choose the heuristic function. Defaults to {heuristics.DEFAULT}.",
+        help=f"Choose the heuristic function(s). Defaults to {heuristics.DEFAULT}.",
         choices=heuristics.NAMES,
-        default=heuristics.DEFAULT
+        default=[heuristics.DEFAULT],
+        nargs='+'
     )
 
     args = parser.parse_args()
@@ -87,7 +87,7 @@ if __name__ == "__main__":
             if gheight != height or gwidth != width:
                 raise RuntimeError("Invalid goal dimensions")
 
-        if not utils.is_solvable(puzzle, goal, height, width):
+        if not utils.is_solvable(puzzle, goal, width):
             raise RuntimeError("Puzzle is not solvable")
 
         utils.print_puzzle(puzzle, height, width)
@@ -96,27 +96,28 @@ if __name__ == "__main__":
         scores = {}
 
         for algo_name in args.algorithm:
-            heuristic = heuristics.NAMES[args.heuristic]
             algorithm = solver.NAMES[algo_name]
+            for heur_name in args.heuristic:
+                heuristic = heuristics.NAMES[heur_name]
 
-            print()
-            print(f"Searching for a solution using {algo_name} algorithm and {args.heuristic} heuristic.")
-            start = time.time()
-            solution, time_complexity, space_complexity = algorithm(tuple(puzzle), height, width, tuple(goal), heuristic)
-            end = time.time()
+                print()
+                print(f"Searching for a solution using {algo_name} algorithm and {heur_name} heuristic.")
+                start = time.time()
+                solution, time_complexity, space_complexity = algorithm(tuple(puzzle), height, width, tuple(goal), heuristic)
+                end = time.time()
 
-            scores[algo_name] = (end - start, len(solution), time_complexity, space_complexity)
+                scores[(algo_name, heur_name)] = (end - start, len(solution), time_complexity, space_complexity)
 
-            print(f"Solution of {len(solution)} moves found in {end - start:.3f}s using {algo_name}")
-            print("Time Complexity:", time_complexity)
-            print("Space Complexity:", space_complexity)
-            print("Moves:", *solution if solution else (None,))
+                print(f"Solution of {len(solution)} moves found in {end - start:.3f}s using {algo_name}")
+                print("Time Complexity:", time_complexity)
+                print("Space Complexity:", space_complexity)
+                print("Moves:", *solution if solution else (None,))
 
-            # utils.print_moves(puzzle, size, solution)
-            if args.visualize:
-                visualizer.start(puzzle, height, width, solution, args.speed)
+                # utils.print_moves(puzzle, size, solution)
+                if args.visualize:
+                    visualizer.start(puzzle, height, width, solution, args.speed)
 
-        if len(args.algorithm) > 1:
+        if len(args.algorithm) > 1 or len(args.heuristic) > 1:
             categories = (
                 ("Time", "s"),
                 ("Moves", " moves"),
@@ -126,8 +127,10 @@ if __name__ == "__main__":
 
             print("\n――――― Ranking ―――――")
             for i, (category, unit) in enumerate(categories):
-                best = min(scores, key=itemgetter(i))
-                print(f"Best algorithm by {category}: {best} ({scores[best][i]}{unit})")
+                best_algo, best_heur = best = min(scores, key=lambda s: scores[s][i])
+                best_scores = scores[best]
+                bests = [algo for algo, stats in scores.items() if stats[i] == best_scores[i]]
+                print(f"Best algorithm by {category}: {', '.join(algo + (f' ({heur})' if len(args.heuristic) > 1 else '') for algo, heur in bests)} ({best_scores[i]}{unit})")
 
     except Exception as ex:
         print(f"n-puzzle: {ex.__class__.__name__}: {ex}", file=sys.stderr)
