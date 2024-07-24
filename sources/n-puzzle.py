@@ -40,6 +40,11 @@ if __name__ == "__main__":
         help="Path for the goal file. Defaults to spiral pattern."
     )
     parser.add_argument(
+        "--verbose",
+        help="Print each state of the puzzle from start to solution.",
+        action="store_true"
+    )
+    parser.add_argument(
         "--visualize",
         help="Visualize the solution with a window.",
         action="store_true"
@@ -113,7 +118,9 @@ if __name__ == "__main__":
                 print("Space Complexity:", space_complexity)
                 print("Moves:", *solution if solution else (None,))
 
-                # utils.print_moves(puzzle, size, solution)
+                if args.verbose:
+                    utils.print_moves(puzzle, height, width, solution)
+
                 if args.visualize:
                     visualizer.start(puzzle, height, width, solution, args.speed)
 

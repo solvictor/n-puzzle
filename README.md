@@ -43,3 +43,4 @@ python3 sources/n-puzzle.py -h
   - [x] Support for multiple input algorithms (executed in a row)
   - [x] Ranking on multiple algorithms
   - [x] CTRL-C Handling
+  - [x] Verbose option (display every state of the puzzle between start and solution)
