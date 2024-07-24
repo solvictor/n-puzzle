@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
                 scores[(algo_name, heur_name)] = (end - start, len(solution), time_complexity, space_complexity)
 
-                print(f"Solution of {len(solution)} moves found in {end - start:.3f}s using {algo_name}")
+                print(f"Solution of {len(solution)} moves found in {end - start:.3f}s")
                 print("Time Complexity:", time_complexity)
                 print("Space Complexity:", space_complexity)
                 print("Moves:", *solution if solution else (None,))

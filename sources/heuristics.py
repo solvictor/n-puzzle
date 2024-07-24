@@ -1,8 +1,8 @@
-from typing import List
+from typing import List, Tuple
 import math
 
 
-def manhattan(grid: List[int], width: int, gpos) -> float:
+def manhattan(grid: List[int], width: int, gpos: List[Tuple[int, int]]) -> float:
     res = 0
     for i, e in enumerate(grid):
         if e == 0:
@@ -13,7 +13,7 @@ def manhattan(grid: List[int], width: int, gpos) -> float:
     return res
 
 
-def euclidean(grid: List[int], width: int, gpos) -> float:
+def euclidean(grid: List[int], width: int, gpos: List[Tuple[int, int]]) -> float:
     res = 0
     for i, e in enumerate(grid):
         if e == 0:
@@ -24,7 +24,7 @@ def euclidean(grid: List[int], width: int, gpos) -> float:
     return res
 
 
-def chebyshev(grid: List[int], width: int, gpos) -> float:
+def chebyshev(grid: List[int], width: int, gpos: List[Tuple[int, int]]) -> float:
     res = 0
     for i, e in enumerate(grid):
         if e == 0:
@@ -35,11 +35,11 @@ def chebyshev(grid: List[int], width: int, gpos) -> float:
     return res
 
 
-def misplaced(grid: List[int], width: int, gpos) -> float:
+def misplaced(grid: List[int], width: int, gpos: List[Tuple[int, int]]) -> float:
     return sum(divmod(i, width) != gpos[e] for i, e in enumerate(grid) if e)
 
 
-def manhattan_with_lc(grid: List[int], width: int, gpos) -> float:
+def manhattan_with_lc(grid: List[int], width: int, gpos: List[Tuple[int, int]]) -> float:
     lc = 0  # Linear conflics
 
     # Lines conflicts
@@ -73,10 +73,10 @@ def manhattan_with_lc(grid: List[int], width: int, gpos) -> float:
     return manhattan(grid, width, gpos) + 2 * lc
 
 
-def best(grid: List[int], width: int, gpos) -> float:
+def best(grid: List[int], width: int, gpos: List[Tuple[int, int]]) -> float:
     return max(heuristic(grid, width, gpos) for heuristic in (euclidean, misplaced, chebyshev, manhattan_with_lc))
 
 
 # TODO Pattern database
-DEFAULT = "euclidean"
+DEFAULT = "manhattan_with_lc"
 NAMES = {f.__name__: f for f in (manhattan, euclidean, misplaced, chebyshev, manhattan_with_lc, best)}

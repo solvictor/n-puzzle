@@ -28,7 +28,7 @@ python3 sources/n-puzzle.py -h
   - [x] Manhattan distance
   - [x] Euclidean distance
   - [x] Chebyshev distance
-  - [ ] Manhattan with linear conflicts
+  - [x] Manhattan with linear conflicts
   - [ ] Pattern database
 - **Generator**
   - [x] Generate `N x M` valid random grids
