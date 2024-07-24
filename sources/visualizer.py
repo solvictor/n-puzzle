@@ -23,7 +23,7 @@ class Visualizer:
         self.border = 2
         self.font = pygame.font.SysFont("Monocraft", font_size)
         self.screen = pygame.display.set_mode((self.grid_width, self.grid_height))
-        pygame.display.set_caption("n-puzzle")
+        pygame.display.set_caption(f"{height * width}-puzzle")
 
     def draw_tile(self, number, position):
         if number == 0:
@@ -54,6 +54,7 @@ class Visualizer:
     def start(self, puzzle, solution, speed):
         clock = pygame.time.Clock()
         move_index = 0
+        pygame.display.set_caption(f"{self.height * self.width}-puzzle ({move_index}/{len(solution)})")
 
         while True:
             for event in pygame.event.get():
@@ -74,6 +75,7 @@ class Visualizer:
             if move_index < len(solution):
                 self.apply_move(puzzle, solution[move_index])
                 move_index += 1
+                pygame.display.set_caption(f"{self.height * self.width}-puzzle ({move_index}/{len(solution)})")
                 clock.tick(speed)
             else:
                 clock.tick(60)
