@@ -4,6 +4,37 @@ import utils
 
 
 def astar(base_grid, height, width, goal, heuristic, use_g=True, use_h=True):
+    """
+    Get the shortest path from an initial state to a goal state using A* alogrithm
+    
+    The A* algorithm combines features of uniform-cost search and pure heuristic search to efficiently find the 
+    shortest path. It uses a priority queue to explore paths with the lowest estimated cost first, where the 
+    cost is determined by both the path length (g cost) and the heuristic estimate of the distance to the goal (h cost).
+
+    Steps:
+        1. Set the initial state as the current state.
+        2. Rank all possible new moves from the current state using the heuristic and path length.
+        3. Choose the best state found as the new current state.
+        4. If the current state is the goal state, return the path.
+        5. Otherwise, continue ranking and exploring new states.
+
+
+    Args:
+        base_grid (Tuple[int, ....]): Initial state
+        height (int): Number of rows in the puzzle
+        width (int): Number of columns in the puzzle
+        goal (Tuple[int, ....]): Goal state
+        heuristic (Function): Heuristic function to use
+        use_g (bool, optional): Toggle g cost (length of the current path). Defaults to True.
+        use_h (bool, optional): Toggle h cost (heuristic of the current grid). Defaults to True.
+
+    Returns:
+        Tuple[str, int, int]: 
+            - Path (str): The sequence of moves to reach the goal.
+            - Time complexity (int): The number of states explored.
+            - Space complexity (int): The maximum number of states held in memory at any one time.
+    """
+
     space_complexity = 1
     time_complexity = 0
     best = ""
@@ -50,6 +81,36 @@ def astar(base_grid, height, width, goal, heuristic, use_g=True, use_h=True):
 
 
 def bd_astar(base_grid, height, width, goal, heuristic, use_g=True, use_h=True):
+    """
+    Get the shortest path from an initial state to a goal state using bidirectional A* alogrithm
+    
+    The bidirectional A* algorithm performs two simultaneous searches: one forward from the initial state
+    and one backward from the goal state. These searches progress towards each other and meet in the middle,
+    potentially reducing the search space and improving performance compared to unidirectional A*.
+
+    Steps:
+        1. Initialize both forward and backward searches with the initial and goal states as their current states.
+        2. Rank all possible new moves from the current states using heuristic and path length for both searches.
+        3. Select the best state found as the new current state for both searches.
+        4. If the current states of the forward and backward searches meet, or if either reaches the other's initial state, return the path.
+        5. Otherwise, continue ranking and exploring new states.
+
+    Args:
+        base_grid (Tuple[int, ....]): Initial state
+        height (int): Number of rows in the puzzle
+        width (int): Number of columns in the puzzle
+        goal (Tuple[int, ....]): Goal state
+        heuristic (Function): Heuristic function to use
+        use_g (bool, optional): Toggle g cost (length of the current path). Defaults to True.
+        use_h (bool, optional): Toggle h cost (heuristic of the current grid). Defaults to True.
+
+    Returns:
+        Tuple[str, int, int]: 
+            - Path (str): The sequence of moves to reach the goal.
+            - Time complexity (int): The number of states explored.
+            - Space complexity (int): The maximum number of states held in memory at any one time.
+    """
+
     space_complexity = 2
     time_complexity = 0
     best = ""
@@ -136,6 +197,27 @@ def bd_astar(base_grid, height, width, goal, heuristic, use_g=True, use_h=True):
 
 
 def id_astar(base_grid, height, width, goal, heuristic):
+    """
+    Find the shortest path from an initial state to a goal state using the Iterative Deepening A* (IDA*) algorithm.
+
+    The IDA* algorithm combines the concepts of iterative deepening depth-first search and A*. It performs a series 
+    of depth-first searches with increasing depth limits, using a heuristic to prune paths that exceed the current 
+    depth limit. This approach ensures completeness and optimality while using less memory than standard A*.
+
+    Args:
+        base_grid (Tuple[int, ...]): Initial state of the grid.
+        height (int): Number of rows in the grid.
+        width (int): Number of columns in the grid.
+        goal (Tuple[int, ...]): Goal state of the grid.
+        heuristic (Function): Heuristic function to estimate the distance to the goal.
+
+    Returns:
+        Tuple[str, int, int]: 
+            - Path (str): The sequence of moves to reach the goal.
+            - Time complexity (int): The number of states explored.
+            - Space complexity (int): The maximum number of states held in memory at any one time.
+    """
+
     space_complexity = 1
     time_complexity = 0
     best = ""
@@ -184,7 +266,31 @@ def id_astar(base_grid, height, width, goal, heuristic):
 
 
 def id_astar_rec(base_grid, height, width, goal, heuristic):
+    """
+    Find the shortest path from an initial state to a goal state using the recursive Iterative Deepening A* (IDA*) algorithm.
+
+    This function implements the IDA* algorithm recursively, which combines the principles of iterative deepening
+    depth-first search and A*. It performs a series of depth-first searches with increasing depth limits, using 
+    a heuristic to prune paths that exceed the current depth limit. This approach ensures completeness and 
+    optimality while using less memory than standard A*.
+
+    Args:
+        base_grid (Tuple[int, ...]): Initial state of the grid.
+        height (int): Number of rows in the grid.
+        width (int): Number of columns in the grid.
+        goal (Tuple[int, ...]): Goal state of the grid.
+        heuristic (function): Heuristic function to estimate the distance to the goal.
+
+    Returns:
+        Tuple[str, int, int]: 
+            - Path (str): The sequence of moves to reach the goal.
+            - Time complexity (int): The number of states explored.
+            - Space complexity (int): The maximum number of states held in memory at any one time.
+    """
+
     def search(grid, y, x, max_depth, height, width, goal, heuristic, path, gpos):
+        """Perform a depth-limited search from the current state using the heuristic to prune paths."""
+
         if grid == goal:
             return path, 1, 0
 
@@ -233,18 +339,98 @@ def id_astar_rec(base_grid, height, width, goal, heuristic):
 
 
 def greedy(base_grid, height, width, goal, heuristic):
+    """
+    Find the shortest path from an initial state to a goal state using the Greedy Best-First Search algorithm.
+
+    This function utilizes the A* algorithm but considers only the heuristic cost (h cost) without the path length 
+    (g cost), effectively making it a Greedy Best-First Search.
+
+    Args:
+        base_grid (Tuple[int, ...]): Initial state of the grid.
+        height (int): Number of rows in the grid.
+        width (int): Number of columns in the grid.
+        goal (Tuple[int, ...]): Goal state of the grid.
+        heuristic (Function): Heuristic function to estimate the distance to the goal.
+
+    Returns:
+        Tuple[str, int, int]: 
+            - Path (str): The sequence of moves to reach the goal.
+            - Time complexity (int): The number of states explored.
+            - Space complexity (int): The maximum number of states held in memory at any one time.
+    """
+
     return astar(base_grid, height, width, goal, heuristic, use_g=False, use_h=True)
 
 
 def uniform_cost(base_grid, height, width, goal, heuristic):
+    """
+    Find the shortest path from an initial state to a goal state using the Uniform Cost Search algorithm.
+
+    This function utilizes the A* algorithm but considers only the path length (g cost) without the heuristic cost 
+    (h cost), effectively making it a Uniform Cost Search.
+
+    Args:
+        base_grid (Tuple[int, ...]): Initial state of the grid.
+        height (int): Number of rows in the grid.
+        width (int): Number of columns in the grid.
+        goal (Tuple[int, ...]): Goal state of the grid.
+        heuristic (Function): Heuristic function to estimate the distance to the goal.
+
+    Returns:
+        Tuple[str, int, int]: 
+            - Path (str): The sequence of moves to reach the goal.
+            - Time complexity (int): The number of states explored.
+            - Space complexity (int): The maximum number of states held in memory at any one time.
+    """
+
     return astar(base_grid, height, width, goal, heuristic, use_g=True, use_h=False)
 
 
 def bd_greedy(base_grid, height, width, goal, heuristic):
+    """
+    Find the shortest path from an initial state to a goal state using the Bidirectional Greedy Best-First Search algorithm.
+
+    This function utilizes the bidirectional A* algorithm but considers only the heuristic cost (h cost) without the path length 
+    (g cost), effectively making it a Bidirectional Greedy Best-First Search.
+
+    Args:
+        base_grid (Tuple[int, ...]): Initial state of the grid.
+        height (int): Number of rows in the grid.
+        width (int): Number of columns in the grid.
+        goal (Tuple[int, ...]): Goal state of the grid.
+        heuristic (Function): Heuristic function to estimate the distance to the goal.
+
+    Returns:
+        Tuple[str, int, int]: 
+            - Path (str): The sequence of moves to reach the goal.
+            - Time complexity (int): The number of states explored.
+            - Space complexity (int): The maximum number of states held in memory at any one time.
+    """
+
     return bd_astar(base_grid, height, width, goal, heuristic, use_g=False, use_h=True)
 
 
 def bd_uniform_cost(base_grid, height, width, goal, heuristic):
+    """
+    Find the shortest path from an initial state to a goal state using the Bidirectional Uniform Cost Search algorithm.
+
+    This function utilizes the bidirectional A* algorithm but considers only the path length (g cost) without the heuristic cost 
+    (h cost), effectively making it a Bidirectional Uniform Cost Search.
+
+    Args:
+        base_grid (Tuple[int, ...]): Initial state of the grid.
+        height (int): Number of rows in the grid.
+        width (int): Number of columns in the grid.
+        goal (Tuple[int, ...]): Goal state of the grid.
+        heuristic (Function): Heuristic function to estimate the distance to the goal.
+
+    Returns:
+        Tuple[str, int, int]: 
+            - Path (str): The sequence of moves to reach the goal.
+            - Time complexity (int): The number of states explored.
+            - Space complexity (int): The maximum number of states held in memory at any one time.
+    """
+
     return bd_astar(base_grid, height, width, goal, heuristic, use_g=True, use_h=False)
 
 
