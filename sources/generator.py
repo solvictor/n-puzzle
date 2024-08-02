@@ -2,12 +2,13 @@ from typing import List
 import random
 
 
-def generate(height: int, width: int, iterations: int = 10000) -> List[int]:
+def generate(height: int, width: int, goal: List[int], iterations: int = 10000) -> List[int]:
     """Generate a random solvable size x size puzzle
 
     Args:
         height (int): Number of rows in the puzzle
         width (int): Number of columns in the puzzle
+        goal (List[int]): Goal state
         iterations (int, optional): Number of times the puzzle is shuffled. Defaults to 10000.
 
     Raises:
@@ -37,7 +38,7 @@ def generate(height: int, width: int, iterations: int = 10000) -> List[int]:
         puzzle[swi] = 0
         return swi
 
-    puzzle = make_goal(height, width)
+    puzzle = goal.copy()
     zero_idx = puzzle.index(0)
     for _ in range(iterations):
         zero_idx = swap_empty(puzzle, zero_idx)

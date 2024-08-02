@@ -80,17 +80,24 @@ if __name__ == "__main__":
         if args.generate is None:
             raw_puzzle = parsing.deserialize_puzzle(args.puzzle)
             height, width, puzzle = parsing.parse_puzzle(raw_puzzle)
+
+            if args.goal is None:
+                goal = generator.make_goal(height, width)
+            else:
+                raw_goal = parsing.deserialize_puzzle(args.goal)
+                gheight, gwidth, goal = parsing.parse_puzzle(raw_goal)
+                if gheight != height or gwidth != width:
+                    raise RuntimeError("Invalid goal dimensions")
         else:
             height, width = parsing.parse_dimensions(args.generate)
-            puzzle = generator.generate(height, width)
 
-        if args.goal is None:
-            goal = generator.make_goal(height, width)
-        else:
-            raw_goal = parsing.deserialize_puzzle(args.goal)
-            gheight, gwidth, goal = parsing.parse_puzzle(raw_goal)
-            if gheight != height or gwidth != width:
-                raise RuntimeError("Invalid goal dimensions")
+            if args.goal is None:
+                goal = generator.make_goal(height, width)
+            else:
+                raw_goal = parsing.deserialize_puzzle(args.goal)
+                *_, goal = parsing.parse_puzzle(raw_goal)
+
+            puzzle = generator.generate(height, width, goal)
 
         if not utils.is_solvable(puzzle, goal, width):
             raise RuntimeError("Puzzle is not solvable")
