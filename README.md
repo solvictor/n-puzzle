@@ -11,7 +11,7 @@
 git clone https://github.com/solvictor/n-puzzle
 cd n-puzzle
 pip install -r requirements.txt
-python3 sources/n-puzzle.py -h
+python3 n-puzzle.py -h
 ```
 
 ## Features

@@ -1,6 +1,6 @@
 from collections import deque
 import heapq
-import utils
+from . import utils
 
 
 def astar(base_grid, height, width, goal, heuristic, use_g=True, use_h=True):

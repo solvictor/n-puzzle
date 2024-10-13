@@ -44,15 +44,21 @@ def manhattan_with_lc(grid: List[int], width: int, gpos: List[Tuple[int, int]]) 
 
     # Lines conflicts
     for i, e in enumerate(grid):
+        # Current pos of e
         y, x = divmod(i, width)
         if e == 0:
             continue
+        # Target pos of e
         ty, tx = gpos[e]
+        # For each element before e in the same line
         for k in range(x):
+            # Previous element current pos
             p = grid[y * width + k]
             if p == 0:
                 continue
+            # Previous element target pos
             ky, kx = gpos[p]
+            # If same line and previous should be after e
             if ky == ty == y and kx > tx:
                 lc += 1
 

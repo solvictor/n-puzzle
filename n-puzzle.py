@@ -1,11 +1,6 @@
 from argparse import ArgumentParser, FileType
-import heuristics
-import visualizer
-import generator
-import parsing
-import solver
+from sources import heuristics, visualizer, generator, parsing, solver, utils
 import signal
-import utils
 import time
 import sys
 
