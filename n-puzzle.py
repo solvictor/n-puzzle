@@ -1,5 +1,5 @@
 from argparse import ArgumentParser, FileType
-from sources import heuristics, visualizer, generator, parsing, solver, utils
+from sources import heuristics, visualizer, generator, parsing, solver, utils, ai
 import signal
 import time
 import sys
@@ -106,6 +106,12 @@ if __name__ == "__main__":
             algorithm = solver.NAMES[algo_name]
             for heur_name in args.heuristic:
                 heuristic = heuristics.NAMES[heur_name]
+                if heuristic == heuristics.neural_net and not ai.MODEL:
+                    ai.MODEL = ai.create_model(height, width)
+                    ai.train(ai.MODEL, generator.make_goal(height, width), height, width)
+                    ai.MODEL.summary()
+                    import numpy as np
+                    print(ai.MODEL.predict(np.array(puzzle.copy()).reshape((1, 16))))
 
                 print()
                 print(f"Searching for a solution using {algo_name} algorithm and {heur_name} heuristic.")

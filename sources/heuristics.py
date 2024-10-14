@@ -1,4 +1,6 @@
 from typing import List, Tuple
+import numpy as np
+from . import ai
 import math
 
 
@@ -83,6 +85,16 @@ def best(grid: List[int], width: int, gpos: List[Tuple[int, int]]) -> float:
     return max(heuristic(grid, width, gpos) for heuristic in (euclidean, misplaced, chebyshev, manhattan_with_lc))
 
 
+def neural_net(grid: List[int], width: int, gpos: List[Tuple[int, int]]) -> float:
+    # print('a', grid)
+    puzzle = np.array(grid).reshape((1, 16))
+    # print('b', puzzle)
+    assert ai.MODEL is not None
+    r = ai.MODEL.predict(puzzle)
+    # print('r', r)
+    return r
+
+
 # TODO Pattern database
 DEFAULT = "manhattan_with_lc"
-NAMES = {f.__name__: f for f in (manhattan, euclidean, misplaced, chebyshev, manhattan_with_lc, best)}
+NAMES = {f.__name__: f for f in (manhattan, euclidean, misplaced, chebyshev, manhattan_with_lc, best, neural_net)}

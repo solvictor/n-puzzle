@@ -330,6 +330,9 @@ def id_astar_rec(base_grid, height, width, goal, heuristic):
 
     max_depth = 1
     while not best:
+        if max_depth > 100:
+            print("Failed to solve", base_grid, goal)
+            exit(1)
         best, time, space = search(base_grid, sy, sx, max_depth, height, width, goal, heuristic, "", gpos)
         time_complexity += time
         space_complexity = max(space_complexity, space)
