@@ -14,7 +14,7 @@ def deserialize_puzzle(puzzle_file: TextIOWrapper) -> List[List[str]]:
 
     raw_puzzle = []
     for line in puzzle_file:
-        comment = line.find('#')
+        comment = line.find("#")
         if comment != -1:
             line = line[:comment]
         line = line.split()
@@ -40,8 +40,8 @@ def parse_dimensions(header: str) -> Tuple[int, int]:
 
     try:
         height = width = header
-        if header.count('x') == 1:
-            height, width = header.split('x')
+        if header.count("x") == 1:
+            height, width = header.split("x")
         assert height.isdigit() and width.isdigit()
         return int(height), int(width)
     except Exception:
@@ -86,7 +86,9 @@ def parse_puzzle(raw_puzzle: List[List[str]]) -> Tuple[int, int, List[int]]:
 
     invalid_elements = [e for e in puzzle if not 0 <= e < height * width]
     if invalid_elements:
-        raise Exception(f"Invalid element{'s' if len(invalid_elements) > 1 else ''} found for a {height}x{width} puzzle: {invalid_elements}")
+        raise Exception(
+            f"Invalid element{'s' if len(invalid_elements) > 1 else ''} found for a {height}x{width} puzzle: {invalid_elements}"
+        )
 
     if len(set(puzzle)) != height * width:
         raise Exception("Puzzle cannot contains duplicates")

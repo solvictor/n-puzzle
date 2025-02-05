@@ -80,9 +80,14 @@ def manhattan_with_lc(grid: List[int], width: int, gpos: List[Tuple[int, int]]) 
 
 
 def best(grid: List[int], width: int, gpos: List[Tuple[int, int]]) -> float:
-    return max(heuristic(grid, width, gpos) for heuristic in (euclidean, misplaced, chebyshev, manhattan_with_lc))
+    return max(
+        heuristic(grid, width, gpos)
+        for heuristic in (euclidean, misplaced, chebyshev, manhattan_with_lc)
+    )
 
 
 # TODO Pattern database
 DEFAULT = "manhattan_with_lc"
-NAMES = {f.__name__: f for f in (manhattan, euclidean, misplaced, chebyshev, manhattan_with_lc, best)}
+NAMES = {
+    f.__name__: f for f in (manhattan, euclidean, misplaced, chebyshev, manhattan_with_lc, best)
+}

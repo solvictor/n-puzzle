@@ -60,8 +60,8 @@ def print_puzzle(puzzle: List[int], height: int, width: int, header: bool = True
     element_format = "{:>" + str(int(log10(height * width) + 1)) + "}"
     for line in range(0, len(puzzle), width):
         if line:
-            formatted_puzzle += '\n'
-        formatted_puzzle += ' '.join(map(element_format.format, puzzle[line: line + width]))
+            formatted_puzzle += "\n"
+        formatted_puzzle += " ".join(map(element_format.format, puzzle[line : line + width]))
     if header:
         print(f"Puzzle {height}x{width}")
     print(formatted_puzzle)
@@ -83,10 +83,13 @@ def print_moves(puzzle: List[int], height: int, width: int, moves: str) -> None:
     start = puzzle.index(0)
     y, x = divmod(start, width)
     for s in moves:
-        ny = y + (1 if s == 'v' else -1 if s == '^' else 0)
-        nx = x + (1 if s == '>' else -1 if s == '<' else 0)
+        ny = y + (1 if s == "v" else -1 if s == "^" else 0)
+        nx = x + (1 if s == ">" else -1 if s == "<" else 0)
         print(s)
-        puzzle[ny * width + nx], puzzle[y * width + x] = puzzle[y * width + x], puzzle[ny * width + nx]
+        puzzle[ny * width + nx], puzzle[y * width + x] = (
+            puzzle[y * width + x],
+            puzzle[ny * width + nx],
+        )
         y, x = ny, nx
         print_puzzle(puzzle, height, width, False)
         print()
@@ -102,11 +105,13 @@ def invert_moves(moves: str) -> str:
         str: Inverted moves
     """
 
-    inv = {'^': 'v', 'v': '^', '<': '>', '>': '<'}
-    return ''.join(inv.get(m, '?') for m in moves)
+    inv = {"^": "v", "v": "^", "<": ">", ">": "<"}
+    return "".join(inv.get(m, "?") for m in moves)
 
 
-def moves(y: int, x: int, height: int, width: int, last: str) -> Generator[Tuple[int, int, str], None, None]:
+def moves(
+    y: int, x: int, height: int, width: int, last: str
+) -> Generator[Tuple[int, int, str], None, None]:
     """Get possible move from a position, avoiding cancellation of previous move
 
     Args:
@@ -125,6 +130,6 @@ def moves(y: int, x: int, height: int, width: int, last: str) -> Generator[Tuple
 
     inv_last = invert_moves(last)
 
-    for ny, nx, s in ((y + 1, x, 'v'), (y - 1, x, '^'), (y, x + 1, '>'), (y, x - 1, '<')):
+    for ny, nx, s in ((y + 1, x, "v"), (y - 1, x, "^"), (y, x + 1, ">"), (y, x - 1, "<")):
         if 0 <= ny < height and 0 <= nx < width and s != inv_last:
             yield (ny, nx, s)

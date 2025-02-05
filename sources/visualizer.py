@@ -10,7 +10,16 @@ def gradient(x, height, width):
 
 
 class Visualizer:
-    def __init__(self, height, width, tile_size=100, background_color=(0, 0, 0), tile_color=(255, 255, 255), tile_text_color=(0, 0, 0), font_size=36):
+    def __init__(
+        self,
+        height,
+        width,
+        tile_size=100,
+        background_color=(0, 0, 0),
+        tile_color=(255, 255, 255),
+        tile_text_color=(0, 0, 0),
+        font_size=36,
+    ):
         self.width = width
         self.height = height
         self.tile_size = tile_size
@@ -29,7 +38,12 @@ class Visualizer:
         if number == 0:
             return
         x, y = position
-        rect = pygame.Rect(x * self.tile_size + self.border // 2, y * self.tile_size + self.border // 2, self.tile_size - self.border, self.tile_size - self.border)
+        rect = pygame.Rect(
+            x * self.tile_size + self.border // 2,
+            y * self.tile_size + self.border // 2,
+            self.tile_size - self.border,
+            self.tile_size - self.border,
+        )
         pygame.draw.rect(self.screen, self.tile_color, rect, border_radius=20)
         text = self.font.render(str(number), True, gradient(number, self.height, self.width))
         text_rect = text.get_rect(center=rect.center)
@@ -45,8 +59,8 @@ class Visualizer:
     def apply_move(self, board, move):
         empty = board.index(0)
         y, x = divmod(empty, self.width)
-        new_y = y + (1 if move == 'v' else -1 if move == '^' else 0)
-        new_x = x + (1 if move == '>' else -1 if move == '<' else 0)
+        new_y = y + (1 if move == "v" else -1 if move == "^" else 0)
+        new_x = x + (1 if move == ">" else -1 if move == "<" else 0)
         if 0 <= new_x < self.width and 0 <= new_y < self.height:
             new_index = new_y * self.width + new_x
             board[empty], board[new_index] = board[new_index], board[empty]
@@ -54,28 +68,34 @@ class Visualizer:
     def start(self, puzzle, solution, speed):
         clock = pygame.time.Clock()
         move_index = 0
-        pygame.display.set_caption(f"{self.height * self.width}-puzzle ({move_index}/{len(solution)})")
+        pygame.display.set_caption(
+            f"{self.height * self.width}-puzzle ({move_index}/{len(solution)})"
+        )
 
         while True:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                if event.type == pygame.QUIT or (
+                    event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
+                ):
                     pygame.quit()
                     return
                 if move_index < len(solution) or event.type != pygame.KEYUP:
                     continue
                 if event.key in (pygame.K_w, pygame.K_UP):
-                    self.apply_move(puzzle, '^')
+                    self.apply_move(puzzle, "^")
                 elif event.key in (pygame.K_s, pygame.K_DOWN):
-                    self.apply_move(puzzle, 'v')
+                    self.apply_move(puzzle, "v")
                 elif event.key in (pygame.K_a, pygame.K_LEFT):
-                    self.apply_move(puzzle, '<')
+                    self.apply_move(puzzle, "<")
                 elif event.key in (pygame.K_d, pygame.K_RIGHT):
-                    self.apply_move(puzzle, '>')
+                    self.apply_move(puzzle, ">")
 
             if move_index < len(solution):
                 self.apply_move(puzzle, solution[move_index])
                 move_index += 1
-                pygame.display.set_caption(f"{self.height * self.width}-puzzle ({move_index}/{len(solution)})")
+                pygame.display.set_caption(
+                    f"{self.height * self.width}-puzzle ({move_index}/{len(solution)})"
+                )
                 clock.tick(speed)
             else:
                 clock.tick(60)
@@ -86,5 +106,11 @@ class Visualizer:
 def start(puzzle, height, width, solution, speed):
     pygame.init()
     puzzle = puzzle.copy()
-    visu = Visualizer(height, width, background_color=(93, 115, 126), tile_text_color=(218, 255, 239), tile_color=(100, 182, 172))
+    visu = Visualizer(
+        height,
+        width,
+        background_color=(93, 115, 126),
+        tile_text_color=(218, 255, 239),
+        tile_color=(100, 182, 172),
+    )
     visu.start(puzzle, solution, speed)

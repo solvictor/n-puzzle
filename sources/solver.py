@@ -67,12 +67,15 @@ def astar(base_grid, height, width, goal, heuristic, use_g=True, use_h=True):
         time_complexity += 1
         space_complexity = max(space_complexity, len(heap) + len(seen))
 
-        for ny, nx, s in utils.moves(y, x, height, width, path[-1] if path else ''):
+        for ny, nx, s in utils.moves(y, x, height, width, path[-1] if path else ""):
             new_grid = list(grid)
             # Make the move
-            new_grid[ny * width + nx], new_grid[y * width + x] = new_grid[y * width + x], new_grid[ny * width + nx]
+            new_grid[ny * width + nx], new_grid[y * width + x] = (
+                new_grid[y * width + x],
+                new_grid[ny * width + nx],
+            )
             new_grid = tuple(new_grid)
-            if not new_grid in seen or depth <= seen[new_grid]:
+            if new_grid not in seen or depth <= seen[new_grid]:
                 g_cost = depth if use_g else 0
                 h_cost = heuristic(new_grid, width, gpos) if use_h else 0
                 heapq.heappush(heap, (h_cost + g_cost, ny, nx, new_grid, path + s))
@@ -166,14 +169,16 @@ def bd_astar(base_grid, height, width, goal, heuristic, use_g=True, use_h=True):
 
         time_complexity += 1
         space_complexity = max(space_complexity, len(aheap) + len(bheap) + len(aseen) + len(bseen))
-
         # Expand path from start
-        if not agrid in aseen or len(aseen[agrid]) >= adepth:
-            for ny, nx, s in utils.moves(ay, ax, height, width, apath[-1] if apath else ''):
+        if agrid not in aseen or len(aseen[agrid]) >= adepth:
+            for ny, nx, s in utils.moves(ay, ax, height, width, apath[-1] if apath else ""):
                 new_grid = list(agrid)
-                new_grid[ny * width + nx], new_grid[ay * width + ax] = new_grid[ay * width + ax], new_grid[ny * width + nx]
+                new_grid[ny * width + nx], new_grid[ay * width + ax] = (
+                    new_grid[ay * width + ax],
+                    new_grid[ny * width + nx],
+                )
                 new_grid = tuple(new_grid)
-                if not new_grid in aseen or len(aseen[new_grid]) >= adepth:
+                if new_grid not in aseen or len(aseen[new_grid]) >= adepth:
                     g_cost = adepth if use_g else 0
                     h_cost = heuristic(new_grid, width, gpos) if use_h else 0
                     heapq.heappush(aheap, (h_cost + g_cost, ny, nx, new_grid, apath + s))
@@ -181,12 +186,15 @@ def bd_astar(base_grid, height, width, goal, heuristic, use_g=True, use_h=True):
             aseen[agrid] = apath
 
         # Expand path from end
-        if not bgrid in bseen or len(bseen[bgrid]) >= bdepth:
-            for ny, nx, s in utils.moves(by, bx, height, width, bpath[-1] if bpath else ''):
+        if bgrid not in bseen or len(bseen[bgrid]) >= bdepth:
+            for ny, nx, s in utils.moves(by, bx, height, width, bpath[-1] if bpath else ""):
                 new_grid = list(bgrid)
-                new_grid[ny * width + nx], new_grid[by * width + bx] = new_grid[by * width + bx], new_grid[ny * width + nx]
+                new_grid[ny * width + nx], new_grid[by * width + bx] = (
+                    new_grid[by * width + bx],
+                    new_grid[ny * width + nx],
+                )
                 new_grid = tuple(new_grid)
-                if not new_grid in bseen or len(bseen[new_grid]) >= bdepth:
+                if new_grid not in bseen or len(bseen[new_grid]) >= bdepth:
                     g_cost = bdepth if use_g else 0
                     h_cost = heuristic(new_grid, width, bpos) if use_h else 0
                     heapq.heappush(bheap, (h_cost + g_cost, ny, nx, new_grid, bpath + s))
@@ -235,7 +243,6 @@ def id_astar(base_grid, height, width, goal, heuristic):
 
     max_depth = 1
     while not best:
-
         stack = deque([(base_grid, sy, sx, str())])
 
         while stack:
@@ -250,9 +257,12 @@ def id_astar(base_grid, height, width, goal, heuristic):
             time_complexity += 1
             space_complexity = max(space_complexity, len(stack))
 
-            for ny, nx, s in utils.moves(y, x, height, width, path[-1] if path else ''):
+            for ny, nx, s in utils.moves(y, x, height, width, path[-1] if path else ""):
                 new_grid = grid.copy()
-                new_grid[ny * width + nx], new_grid[y * width + x] = new_grid[y * width + x], new_grid[ny * width + nx]
+                new_grid[ny * width + nx], new_grid[y * width + x] = (
+                    new_grid[y * width + x],
+                    new_grid[ny * width + nx],
+                )
 
                 g_cost = depth
                 h_cost = heuristic(new_grid, width, gpos)
@@ -297,14 +307,16 @@ def id_astar_rec(base_grid, height, width, goal, heuristic):
         time_complexity = 1
         space_complexity = 1
 
-        for ny, nx, s in utils.moves(y, x, height, width, path[-1] if path else ''):
+        for ny, nx, s in utils.moves(y, x, height, width, path[-1] if path else ""):
             grid[ny * width + nx], grid[y * width + x] = grid[y * width + x], grid[ny * width + nx]
 
             g_cost = len(path) + 1
             h_cost = heuristic(grid, width, gpos)
 
             if h_cost + g_cost <= max_depth:
-                solution, time, space = search(grid, ny, nx, max_depth, height, width, goal, heuristic, path + s, gpos)
+                solution, time, space = search(
+                    grid, ny, nx, max_depth, height, width, goal, heuristic, path + s, gpos
+                )
                 time_complexity += time
                 if solution:
                     return solution, time_complexity, space_complexity + space
@@ -330,7 +342,9 @@ def id_astar_rec(base_grid, height, width, goal, heuristic):
 
     max_depth = 1
     while not best:
-        best, time, space = search(base_grid, sy, sx, max_depth, height, width, goal, heuristic, "", gpos)
+        best, time, space = search(
+            base_grid, sy, sx, max_depth, height, width, goal, heuristic, "", gpos
+        )
         time_complexity += time
         space_complexity = max(space_complexity, space)
         max_depth += 1
@@ -434,5 +448,22 @@ def bd_uniform_cost(base_grid, height, width, goal, heuristic):
     return bd_astar(base_grid, height, width, goal, heuristic, use_g=True, use_h=False)
 
 
+def line_by_line(base_grid, height, width, goal, heuristic):
+    raise NotImplementedError("")
+
+
 DEFAULT = "greedy"
-NAMES = {f.__name__: f for f in (astar, greedy, uniform_cost, id_astar, id_astar_rec, bd_astar, bd_greedy, bd_uniform_cost)}
+NAMES = {
+    f.__name__: f
+    for f in (
+        astar,
+        greedy,
+        uniform_cost,
+        id_astar,
+        id_astar_rec,
+        bd_astar,
+        bd_greedy,
+        bd_uniform_cost,
+        line_by_line,
+    )
+}
